@@ -1,8 +1,20 @@
 #!/usr/bin/env python3
 
-from flask import Flask
+import os
+from flask import Flask, request,current_app,g
 
-app = Flask(__name__)
+app=Flask(__name__)
 
-if __name__ == '__main__':
+@app.before_request
+def app_path():
+    g.path=os.path.abspath(os.getcwd())
+
+@app.route('/')
+def index():
+    host=request.headers.get('Host') # this is the request context
+    appname=current_app.name # application context
+    return f'''<h1>The host for this page is {host}</h1>
+               <h2> The name of this application is {appname} </h2>'''
+
+if __name__=='__main__':
     app.run(port=5555, debug=True)
